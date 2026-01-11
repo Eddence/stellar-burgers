@@ -71,13 +71,33 @@ type TOrdersResponse = TServerResponse<{
   data: TOrder[];
 }>;
 
-export const getIngredientsApi = () =>
-  fetch(`${URL}/ingredients`)
-    .then((res) => checkResponse<TIngredientsResponse>(res))
+export const getIngredientsApi = () => {
+  console.log('getIngredientsApi: URL =', URL);
+  const fullUrl = `${URL}/ingredients`;
+  console.log('getIngredientsApi: Full URL =', fullUrl);
+  return fetch(fullUrl)
+    .then((res) => {
+      console.log('getIngredientsApi: Response status =', res.status);
+      return checkResponse<TIngredientsResponse>(res);
+    })
     .then((data) => {
-      if (data?.success) return data.data;
+      console.log('getIngredientsApi: Response data =', data);
+      if (data?.success) {
+        console.log(
+          'getIngredientsApi: Success, returning',
+          data.data.length,
+          'ingredients'
+        );
+        return data.data;
+      }
+      console.error('getIngredientsApi: Response success = false');
       return Promise.reject(data);
+    })
+    .catch((error) => {
+      console.error('getIngredientsApi: Error caught:', error);
+      throw error;
     });
+};
 
 export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)

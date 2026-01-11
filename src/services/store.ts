@@ -6,10 +6,17 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const rootReducer = () => {}; // Заменить на импорт настоящего редьюсера
+import { rootReducer } from './rootReducer';
+import { createWsMiddleware } from './middleware/wsMiddleware';
 
 const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ['feed/connect', 'orders/connect']
+      }
+    }).concat(createWsMiddleware()),
   devTools: process.env.NODE_ENV !== 'production'
 });
 

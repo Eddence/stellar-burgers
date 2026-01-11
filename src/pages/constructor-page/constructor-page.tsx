@@ -1,4 +1,5 @@
-import { useSelector } from '../../services/store';
+import { useSelector, useDispatch } from '../../services/store';
+import { useEffect } from 'react';
 
 import styles from './constructor-page.module.css';
 
@@ -6,14 +7,42 @@ import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
-  const isIngredientsLoading = false;
+  const dispatch = useDispatch();
+  const isIngredientsLoading = useSelector(
+    (state) => state.ingredients.isLoading
+  );
+  const ingredients = useSelector((state) => state.ingredients.ingredients);
+  const error = useSelector((state) => state.ingredients.error);
+
+  useEffect(() => {
+    console.log('ConstructorPage useEffect:', {
+      ingredientsLength: ingredients.length,
+      isIngredientsLoading,
+      error
+    });
+    // Загружаем ингредиенты при монтировании, если их еще нет
+    if (ingredients.length === 0 && !isIngredientsLoading) {
+      console.log('Dispatching fetchIngredients...');
+      dispatch(fetchIngredients());
+    }
+  }, [dispatch]);
+
+  if (error) {
+    console.error('Error loading ingredients:', error);
+  }
+
+  console.log('ConstructorPage render:', {
+    isIngredientsLoading,
+    ingredientsLength: ingredients.length,
+    error
+  });
 
   return (
     <>
-      {isIngredientsLoading ? (
+      {isIngredientsLoading && !ingredients.length ? (
         <Preloader />
       ) : (
         <main className={styles.containerMain}>

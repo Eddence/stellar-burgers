@@ -18,14 +18,8 @@ export const ConstructorPage: FC = () => {
   const error = useSelector((state) => state.ingredients.error);
 
   useEffect(() => {
-    console.log('ConstructorPage useEffect:', {
-      ingredientsLength: ingredients.length,
-      isIngredientsLoading,
-      error
-    });
     // Загружаем ингредиенты при монтировании, если их еще нет
     if (ingredients.length === 0 && !isIngredientsLoading) {
-      console.log('Dispatching fetchIngredients...');
       dispatch(fetchIngredients());
     }
   }, [dispatch]);
@@ -33,12 +27,6 @@ export const ConstructorPage: FC = () => {
   if (error) {
     console.error('Error loading ingredients:', error);
   }
-
-  console.log('ConstructorPage render:', {
-    isIngredientsLoading,
-    ingredientsLength: ingredients.length,
-    error
-  });
 
   return (
     <>

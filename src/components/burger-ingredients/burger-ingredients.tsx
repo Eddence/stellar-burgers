@@ -11,13 +11,6 @@ export const BurgerIngredients: FC = () => {
   const mains = ingredients.filter((item) => item.type === 'main');
   const sauces = ingredients.filter((item) => item.type === 'sauce');
 
-  console.log('BurgerIngredients render:', {
-    totalIngredients: ingredients.length,
-    buns: buns.length,
-    mains: mains.length,
-    sauces: sauces.length
-  });
-
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);

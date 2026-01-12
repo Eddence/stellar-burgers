@@ -5,17 +5,20 @@ import { selectIngredients } from '../../services/slices/ingredientsSlice/ingred
 import {
   fetchOrderByNumber,
   selectOrderDataFromState,
-  selectUserOrdersFromState
+  selectUserOrdersFromState,
+  selectOrderRequest
 } from '../../services/slices/order/orderSlice';
 import { selectFeedsOrders } from '../../services/slices/feeds/feedsSlice';
 import { TIngredient } from '@utils-types';
 import { OrderInfoUI } from '../ui/order-info';
+import { Preloader } from '@ui';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
   const dispatch = useDispatch();
 
   const ingredients = useSelector(selectIngredients);
+  const orderRequest = useSelector(selectOrderRequest);
 
   const userOrders = useSelector(selectUserOrdersFromState);
   const feedsOrders = useSelector(selectFeedsOrders);
@@ -37,7 +40,9 @@ export const OrderInfo: FC = () => {
   }, [dispatch, orderData, number]);
 
   const orderInfo = useMemo(() => {
-    if (!orderData || !ingredients.length) return null;
+    if (!orderData || !ingredients.length) {
+      return null;
+    }
 
     const date = new Date(orderData.createdAt);
 
@@ -74,7 +79,9 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) return null;
+  if (orderRequest || (!orderData && number) || !orderInfo) {
+    return <Preloader />;
+  }
 
   return <OrderInfoUI orderInfo={orderInfo} />;
 };

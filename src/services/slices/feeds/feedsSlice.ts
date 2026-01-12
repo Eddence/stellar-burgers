@@ -25,20 +25,7 @@ export const fetchFeeds = createAsyncThunk(
 export const feedsSlice = createSlice({
   name: 'feeds',
   initialState,
-  reducers: {
-    setFeeds: (
-      state,
-      action: PayloadAction<{
-        orders: TOrder[];
-        total: number;
-        totalToday: number;
-      }>
-    ) => {
-      state.orders = action.payload.orders;
-      state.total = action.payload.total;
-      state.totalToday = action.payload.totalToday;
-    }
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchFeeds.fulfilled, (state, action) => {
       state.orders = action.payload.orders;
@@ -56,7 +43,6 @@ export const feedsSlice = createSlice({
 
 export const { selectOrders, selectTotal, selectTotalToday } =
   feedsSlice.selectors;
-export const { setFeeds } = feedsSlice.actions;
 
 // Типизированные селекторы для использования с RootState
 export const selectFeedsOrders = (state: RootState) => state.feeds.orders;

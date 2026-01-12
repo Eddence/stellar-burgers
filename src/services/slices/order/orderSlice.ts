@@ -50,9 +50,6 @@ export const orderSlice = createSlice({
   reducers: {
     clearOrder: (state) => {
       state.orderData = null;
-    },
-    setOrders: (state, action: PayloadAction<TOrder[]>) => {
-      state.userOrders = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -83,10 +80,19 @@ export const orderSlice = createSlice({
         state.error = action.error.message || 'Ошибка загрузки истории';
       })
 
+      .addCase(fetchOrderByNumber.pending, (state) => {
+        state.orderRequest = true;
+        state.error = null;
+      })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
+        state.orderRequest = false;
         if (action.payload.orders && action.payload.orders.length > 0) {
           state.orderData = action.payload.orders[0];
         }
+      })
+      .addCase(fetchOrderByNumber.rejected, (state, action) => {
+        state.orderRequest = false;
+        state.error = action.error.message || 'Ошибка загрузки заказа';
       });
   },
   selectors: {
@@ -97,7 +103,6 @@ export const orderSlice = createSlice({
 });
 
 export const { clearOrder } = orderSlice.actions;
-export const { setOrders } = orderSlice.actions;
 
 export const { selectUserOrders, selectOrderData, selectOrderRequest } =
   orderSlice.selectors;

@@ -8,11 +8,31 @@
 
 .elements {
   min-height: 100px;
-
-  overflow-y: scroll;
+  max-height: calc(100vh - 500px);
+  overflow-y: auto;
+  overflow-x: hidden;
   list-style-type: none;
   margin: 0;
   padding: 0;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
+}
+
+.elements::-webkit-scrollbar {
+  width: 8px;
+}
+
+.elements::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.elements::-webkit-scrollbar-thumb {
+  background: #8585ad;
+  border-radius: 0;
+}
+
+.elements::-webkit-scrollbar-thumb:hover {
+  background: #a0a0c0;
 }
 
 .total {
@@ -48,6 +68,21 @@
   line-height: 24px;
   color: #f2f2f3;
   margin-left: 44px;
+}
+
+.moveButtonPlaceholder {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.noBunsInList {
+  width: 100%;
+  max-width: 536px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .noBunsTop {

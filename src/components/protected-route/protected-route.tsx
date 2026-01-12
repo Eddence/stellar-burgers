@@ -1,26 +1,36 @@
-import { FC, ReactElement } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import React from 'react';
 import { useSelector } from '../../services/store';
+import {
+  selectUser,
+  selectIsAuthChecked
+} from '../../services/slices/user/userSlice';
+import { Preloader } from '@ui';
 
-type TProtectedRouteProps = {
+type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
-  children: ReactElement;
+  children: React.ReactElement;
 };
 
-export const ProtectedRoute: FC<TProtectedRouteProps> = ({
+export const ProtectedRoute = ({
   onlyUnAuth = false,
   children
-}) => {
-  const isAuth = useSelector((state) => state.auth.isAuth);
+}: ProtectedRouteProps) => {
+  const isAuthChecked = useSelector(selectIsAuthChecked);
+  const user = useSelector(selectUser);
   const location = useLocation();
 
-  if (onlyUnAuth && isAuth) {
-    const from = location.state?.from || { pathname: '/' };
-    return <Navigate to={from} replace />;
+  if (!isAuthChecked) {
+    return <Preloader />;
   }
 
-  if (!onlyUnAuth && !isAuth) {
-    return <Navigate to='/login' state={{ from: location }} replace />;
+  if (onlyUnAuth && user) {
+    const from = location.state?.from || { pathname: '/' };
+    return <Navigate to={from} />;
+  }
+
+  if (!onlyUnAuth && !user) {
+    return <Navigate to='/login' state={{ from: location }} />;
   }
 
   return children;

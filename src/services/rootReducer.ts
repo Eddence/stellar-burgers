@@ -1,16 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import {
-  ingredientsReducer,
-  authReducer,
-  constructorReducer,
-  feedReducer,
-  ordersReducer
-} from './slices';
+import { ingredientsSlice } from './slices/ingredientsSlice/ingredientsSlice';
+import { userSlice } from './slices/user/userSlice';
+import { constructorSlice } from './slices/constructor/constructorSlice';
+import { feedsSlice } from './slices/feeds/feedsSlice';
+import { orderSlice } from './slices/order/orderSlice';
 
 export const rootReducer = combineReducers({
-  ingredients: ingredientsReducer,
-  auth: authReducer,
-  constructor: constructorReducer,
-  feed: feedReducer,
-  orders: ordersReducer
+  [ingredientsSlice.name]: ingredientsSlice.reducer,
+  [userSlice.name]: userSlice.reducer,
+  [constructorSlice.name]: constructorSlice.reducer,
+  [feedsSlice.name]: feedsSlice.reducer,
+  [orderSlice.name]: orderSlice.reducer
 });

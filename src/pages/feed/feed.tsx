@@ -1,29 +1,26 @@
 import { Preloader } from '@ui';
 import { FeedUI } from '@ui-pages';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchFeeds } from '../../services/slices/feedSlice';
+import {
+  fetchFeeds,
+  selectFeedsOrders
+} from '../../services/slices/feeds/feedsSlice';
 
 export const Feed: FC = () => {
   const dispatch = useDispatch();
-  const { orders, total, totalToday, isLoading } = useSelector(
-    (state) => state.feed
-  );
+
+  const orders = useSelector(selectFeedsOrders);
 
   useEffect(() => {
     dispatch(fetchFeeds());
-    dispatch({ type: 'feed/connect' });
-
-    return () => {
-      // WebSocket закроется автоматически при размонтировании
-    };
   }, [dispatch]);
 
-  const handleGetFeeds = () => {
+  const handleGetFeeds = useCallback(() => {
     dispatch(fetchFeeds());
-  };
+  }, [dispatch]);
 
-  if (isLoading && !orders.length) {
+  if (!orders.length) {
     return <Preloader />;
   }
 

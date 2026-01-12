@@ -1,6 +1,6 @@
 import { Middleware } from '@reduxjs/toolkit';
-import { setFeeds } from '../slices/feedSlice';
-import { setOrders } from '../slices/ordersSlice';
+import { setFeeds } from '../slices/feeds/feedsSlice';
+import { setOrders } from '../slices/order/orderSlice';
 import { TOrder } from '@utils-types';
 
 const URL = process.env.BURGER_API_URL || '';

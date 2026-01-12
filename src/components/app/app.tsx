@@ -1,5 +1,12 @@
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice/ingredientsSlice';
+import { checkUserAuth } from '../../services/slices/user/userSlice';
+import '../../index.css';
+import styles from './app.module.css';
+
+import { AppHeader, Modal, OrderInfo, IngredientDetails } from '@components';
 import {
   ConstructorPage,
   Feed,
@@ -11,43 +18,32 @@ import {
   ProfileOrders,
   NotFound404
 } from '@pages';
-import {
-  IngredientDetails,
-  OrderInfo,
-  Modal,
-  ProtectedRoute
-} from '@components';
-import '../../index.css';
-import styles from './app.module.css';
-
-import { AppHeader } from '@components';
+import { ProtectedRoute } from '../protected-route/protected-route';
 
 const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const background = location.state?.background;
+  const dispatch = useDispatch();
 
-  const handleModalClose = () => {
-    navigate(-1);
-  };
+  const backgroundLocation = location.state?.background;
 
   useEffect(() => {
-    if (background) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [background]);
+    dispatch(checkUserAuth());
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+
+  const closeModal = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes location={background || location}>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route
           path='/login'
           element={
@@ -96,8 +92,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path='/ingredients/:id' element={<IngredientDetails />} />
-        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route
           path='/profile/orders/:number'
           element={
@@ -109,32 +103,33 @@ const App = () => {
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {background && (
+      {backgroundLocation && (
         <Routes>
           <Route
-            path='/ingredients/:id'
+            path='/feed/:number'
             element={
-              <Modal title='Детали ингредиента' onClose={handleModalClose}>
-                <IngredientDetails />
+              /* Передаем пустую строку в title, чтобы убрать крупный заголовок */
+              <Modal title={''} onClose={closeModal}>
+                <OrderInfo />
               </Modal>
             }
           />
           <Route
-            path='/feed/:number'
+            path='/ingredients/:id'
             element={
-              <Modal title='' onClose={handleModalClose}>
-                <OrderInfo />
+              <Modal title={'Детали ингредиента'} onClose={closeModal}>
+                <IngredientDetails />
               </Modal>
             }
           />
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal title='' onClose={handleModalClose}>
-                <ProtectedRoute>
+              <ProtectedRoute>
+                <Modal title={''} onClose={closeModal}>
                   <OrderInfo />
-                </ProtectedRoute>
-              </Modal>
+                </Modal>
+              </ProtectedRoute>
             }
           />
         </Routes>

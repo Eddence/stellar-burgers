@@ -1,36 +1,25 @@
 import { useSelector, useDispatch } from '../../services/store';
-import { useEffect } from 'react';
-
-import styles from './constructor-page.module.css';
-
-import { BurgerIngredients } from '../../components';
-import { BurgerConstructor } from '../../components';
+import { useEffect, FC } from 'react';
+import {
+  fetchIngredients,
+  selectIsIngredientsLoading
+} from '../../services/slices/ingredientsSlice/ingredientsSlice';
 import { Preloader } from '../../components/ui';
-import { FC } from 'react';
-import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { BurgerIngredients, BurgerConstructor } from '../../components';
+import styles from './constructor-page.module.css';
 
 export const ConstructorPage: FC = () => {
   const dispatch = useDispatch();
-  const isIngredientsLoading = useSelector(
-    (state) => state.ingredients.isLoading
-  );
-  const ingredients = useSelector((state) => state.ingredients.ingredients);
-  const error = useSelector((state) => state.ingredients.error);
+
+  const isIngredientsLoading = useSelector(selectIsIngredientsLoading);
 
   useEffect(() => {
-    // Загружаем ингредиенты при монтировании, если их еще нет
-    if (ingredients.length === 0 && !isIngredientsLoading) {
-      dispatch(fetchIngredients());
-    }
+    dispatch(fetchIngredients());
   }, [dispatch]);
-
-  if (error) {
-    console.error('Error loading ingredients:', error);
-  }
 
   return (
     <>
-      {isIngredientsLoading && !ingredients.length ? (
+      {isIngredientsLoading ? (
         <Preloader />
       ) : (
         <main className={styles.containerMain}>

@@ -1,37 +1,34 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
-
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
-import { useDispatch } from '../../services/store';
-import { addBun, addIngredient } from '../../services/slices/constructorSlice';
-import { TConstructorIngredient } from '@utils-types';
+import { useDispatch, useSelector } from '../../services/store';
+import { addIngredient } from '../../services/slices/constructor/constructorSlice';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
-  ({ ingredient, count }) => {
-    const location = useLocation();
+  ({ ingredient }) => {
     const dispatch = useDispatch();
+    const location = useLocation();
+
+    const constructorItems = useSelector((state) => state.burgerConstructor);
+
+    const count = useMemo(() => {
+      if (ingredient.type === 'bun') {
+        return constructorItems.bun?._id === ingredient._id ? 1 : 0;
+      }
+      return constructorItems.ingredients.filter(
+        (item) => item._id === ingredient._id
+      ).length;
+    }, [constructorItems, ingredient]);
 
     const handleAdd = () => {
-      if (ingredient.type === 'bun') {
-        dispatch(
-          addBun({ ...ingredient, id: uuidv4() } as TConstructorIngredient)
-        );
-      } else {
-        dispatch(
-          addIngredient({
-            ...ingredient,
-            id: uuidv4()
-          } as TConstructorIngredient)
-        );
-      }
+      dispatch(addIngredient(ingredient));
     };
 
     return (
       <BurgerIngredientUI
         ingredient={ingredient}
-        count={count}
+        count={count > 0 ? count : undefined}
         locationState={{ background: location }}
         handleAdd={handleAdd}
       />

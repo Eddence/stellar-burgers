@@ -1,23 +1,20 @@
-import { ProfileOrdersUI } from '@ui-pages';
 import { FC, useEffect } from 'react';
+import { ProfileOrdersUI } from '@ui-pages';
 import { useDispatch, useSelector } from '../../services/store';
-import { fetchOrders } from '../../services/slices/ordersSlice';
+import {
+  fetchUserOrders,
+  selectUserOrdersFromState
+} from '../../services/slices/order/orderSlice';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();
-  const orders = useSelector((state) => state.orders.orders);
-  const isAuth = useSelector((state) => state.auth.isAuth);
+  const orders = useSelector(selectUserOrdersFromState);
 
   useEffect(() => {
-    if (isAuth) {
-      dispatch(fetchOrders());
-      dispatch({ type: 'orders/connect' });
-    }
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
 
-    return () => {
-      // WebSocket закроется автоматически при размонтировании
-    };
-  }, [dispatch, isAuth]);
+  if (!orders) return null;
 
   return <ProfileOrdersUI orders={orders} />;
 };

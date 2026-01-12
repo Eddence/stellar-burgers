@@ -3,28 +3,25 @@ import { BurgerConstructorElementUI } from '@ui';
 import { BurgerConstructorElementProps } from './type';
 import { useDispatch } from '../../services/store';
 import {
-  moveIngredient,
-  removeIngredient
-} from '../../services/slices/constructorSlice';
+  removeIngredient,
+  moveIngredientUp,
+  moveIngredientDown
+} from '../../services/slices/constructor/constructorSlice';
 
 export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
   ({ ingredient, index, totalItems }) => {
     const dispatch = useDispatch();
 
-    const handleMoveDown = () => {
-      if (index < totalItems - 1) {
-        dispatch(moveIngredient({ dragIndex: index, hoverIndex: index + 1 }));
-      }
+    const handleClose = () => {
+      dispatch(removeIngredient(ingredient.id));
     };
 
     const handleMoveUp = () => {
-      if (index > 0) {
-        dispatch(moveIngredient({ dragIndex: index, hoverIndex: index - 1 }));
-      }
+      dispatch(moveIngredientUp(index));
     };
 
-    const handleClose = () => {
-      dispatch(removeIngredient(ingredient.id));
+    const handleMoveDown = () => {
+      dispatch(moveIngredientDown(index));
     };
 
     return (
@@ -32,9 +29,9 @@ export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
         ingredient={ingredient}
         index={index}
         totalItems={totalItems}
+        handleClose={handleClose}
         handleMoveUp={handleMoveUp}
         handleMoveDown={handleMoveDown}
-        handleClose={handleClose}
       />
     );
   }

@@ -3,9 +3,21 @@ describe('Проверка конструктора', () => {
   const MODAL = '[data-cy="modal"]';
 
   beforeEach(() => {
-    cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' });
-    cy.intercept('GET', '**/api/auth/user', { fixture: 'user.json' });
-    cy.intercept('POST', '**/api/orders', { fixture: 'order.json' }).as('postOrder');
+    cy.intercept(
+      'GET',
+      'https://norma.education-services.ru/api/ingredients',
+      { fixture: 'ingredients.json' }
+    );
+    cy.intercept(
+      'GET',
+      'https://norma.education-services.ru/api/auth/user',
+      { fixture: 'user.json' }
+    );
+    cy.intercept(
+      'POST',
+      'https://norma.education-services.ru/api/orders',
+      { fixture: 'order.json' }
+    ).as('postOrder');
 
     cy.window().then((win) => {
       win.localStorage.setItem('refreshToken', 'test-refresh-token');
@@ -80,6 +92,10 @@ describe('Проверка конструктора', () => {
 
   describe('Создание заказа', () => {
     it('полный цикл оформления заказа', () => {
+      cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa093c"]')
+        .find('button')
+        .click();
+
       cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0941"]')
         .find('button')
         .click();

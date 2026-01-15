@@ -3,12 +3,10 @@ describe('Проверка конструктора', () => {
   const MODAL = '[data-cy="modal"]';
 
   beforeEach(() => {
-    // Перехватываем все запросы
     cy.intercept('GET', '**/api/ingredients', { fixture: 'ingredients.json' });
     cy.intercept('GET', '**/api/auth/user', { fixture: 'user.json' });
     cy.intercept('POST', '**/api/orders', { fixture: 'order.json' }).as('postOrder');
 
-    // Устанавливаем токены в браузер, чтобы приложение считало нас залогиненными
     cy.window().then((win) => {
       win.localStorage.setItem('refreshToken', 'test-refresh-token');
     });
@@ -18,7 +16,6 @@ describe('Проверка конструктора', () => {
   });
 
   afterEach(() => {
-    // Очищаем localStorage и cookies после каждого теста
     cy.window().then((win) => {
       win.localStorage.clear();
     });
@@ -37,12 +34,10 @@ describe('Проверка конструктора', () => {
     });
 
     it('должен добавить начинку в конструктор', () => {
-      // Сначала добавляем булку
       cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa093c"]')
         .find('button')
         .click();
 
-      // Добавляем начинку
       cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0941"]')
         .find('button')
         .click();
@@ -62,9 +57,8 @@ describe('Проверка конструктора', () => {
       cy.contains(BUN_NAME).click();
       cy.contains('Детали ингредиента').should('be.visible');
       cy.contains(BUN_NAME).should('be.visible');
-      // Проверяем питательную ценность из fixtures
-      cy.contains('420').should('be.visible'); // калории
-      cy.contains('80').should('be.visible'); // белки
+      cy.contains('420').should('be.visible');
+      cy.contains('80').should('be.visible');
     });
 
     it('должен закрыть модальное окно при клике на крестик', () => {
@@ -86,26 +80,20 @@ describe('Проверка конструктора', () => {
 
   describe('Создание заказа', () => {
     it('полный цикл оформления заказа', () => {
-      // 1. Добавляем ингредиент
       cy.get('[data-cy="ingredient-643d69a5c3f7b9001cfa0941"]')
         .find('button')
         .click();
 
-      // 2. Кликаем оформить заказ
       cy.get('[data-cy="order-button"]').click();
 
-      // 3. Ждем ответа от сервера
       cy.wait('@postOrder');
 
-      // 4. Проверяем, что модалка открылась и там правильный номер заказа
       cy.get(MODAL).should('be.visible');
       cy.get('[data-cy="order-number"]').should('contain', '12345');
 
-      // 5. Закрываем модалку
       cy.get('[data-cy="modal-close"]').click();
       cy.get(MODAL).should('not.exist');
 
-      // 6. Проверяем, что конструктор очистился (булки больше нет)
       cy.get('[data-cy="burger-constructor"]').should('not.contain', BUN_NAME);
     });
   });

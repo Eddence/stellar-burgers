@@ -118,7 +118,6 @@ describe('constructorSlice reducer', () => {
       const firstId = state.ingredients[0].id;
       const secondId = state.ingredients[1].id;
 
-      // Перемещаем второй ингредиент вверх
       state = constructorSlice.reducer(state, moveIngredientUp(1));
 
       expect(state.ingredients[0].id).toBe(secondId);
@@ -132,7 +131,6 @@ describe('constructorSlice reducer', () => {
       const firstId = state.ingredients[0].id;
       const secondId = state.ingredients[1].id;
 
-      // Перемещаем первый ингредиент вниз
       state = constructorSlice.reducer(state, moveIngredientDown(0));
 
       expect(state.ingredients[0].id).toBe(secondId);
@@ -145,7 +143,6 @@ describe('constructorSlice reducer', () => {
 
       const originalOrder = state.ingredients.map((ing) => ing.id);
 
-      // Пытаемся переместить первый ингредиент вверх
       state = constructorSlice.reducer(state, moveIngredientUp(0));
 
       expect(state.ingredients.map((ing) => ing.id)).toEqual(originalOrder);
@@ -157,7 +154,6 @@ describe('constructorSlice reducer', () => {
 
       const originalOrder = state.ingredients.map((ing) => ing.id);
 
-      // Пытаемся переместить последний ингредиент вниз
       state = constructorSlice.reducer(state, moveIngredientDown(1));
 
       expect(state.ingredients.map((ing) => ing.id)).toEqual(originalOrder);

@@ -90,7 +90,6 @@ describe('userSlice reducer', () => {
       );
       const state = userSlice.reducer(undefined, action);
 
-      // registerUser не имеет pending обработчика, проверяем начальное состояние
       expect(state.user).toBeNull();
     });
 
@@ -117,7 +116,6 @@ describe('userSlice reducer', () => {
       );
       const state = userSlice.reducer(undefined, action);
 
-      // registerUser не имеет rejected обработчика, проверяем начальное состояние
       expect(state.user).toBeNull();
     });
   });
@@ -127,7 +125,6 @@ describe('userSlice reducer', () => {
       const action = updateUser.pending('', { name: 'Updated Name' }, undefined);
       const state = userSlice.reducer(undefined, action);
 
-      // updateUser не имеет pending обработчика, проверяем начальное состояние
       expect(state.user).toBeNull();
     });
 
@@ -163,7 +160,6 @@ describe('userSlice reducer', () => {
       );
       const state = userSlice.reducer(stateWithUser, action);
 
-      // updateUser не имеет rejected обработчика, проверяем, что состояние не изменилось
       expect(state.user).toEqual(mockUser);
     });
   });
@@ -205,7 +201,6 @@ describe('userSlice reducer', () => {
       const action = logoutUser.pending('', undefined, undefined);
       const state = userSlice.reducer(undefined, action);
 
-      // logoutUser не имеет pending обработчика, проверяем начальное состояние
       expect(state.user).toBeNull();
     });
 
@@ -241,7 +236,6 @@ describe('userSlice reducer', () => {
       );
       const state = userSlice.reducer(stateWithUser, action);
 
-      // logoutUser не имеет rejected обработчика, проверяем, что состояние не изменилось
       expect(state.user).toEqual(mockUser);
     });
   });

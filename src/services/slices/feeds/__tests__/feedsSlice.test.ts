@@ -35,7 +35,6 @@ describe('feedsSlice reducer', () => {
       const action = fetchFeeds.pending('', undefined, undefined);
       const state = feedsSlice.reducer(undefined, action);
 
-      // В feedsSlice нет isLoading, но проверяем, что состояние не изменилось некорректно
       expect(state.orders).toEqual([]);
       expect(state.total).toBe(0);
       expect(state.totalToday).toBe(0);
@@ -60,7 +59,6 @@ describe('feedsSlice reducer', () => {
       );
       const state = feedsSlice.reducer(undefined, action);
 
-      // В feedsSlice нет обработки rejected, но проверяем, что состояние не изменилось
       expect(state.orders).toEqual([]);
       expect(state.error).toBeNull();
     });

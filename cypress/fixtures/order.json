@@ -1,7 +1,7 @@
 {
   "success": true,
-  "user": {
-    "email": "test@test.ru",
-    "name": "Test User"
+  "name": "Краторный space бургер",
+  "order": {
+    "number": 12345
   }
 }
